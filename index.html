@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Studio – Generator & Scanner</title>
+  <meta name="description" content="A powerful, beautiful QR Code generator and scanner. Create custom QR codes, scan via camera or image upload, with full history and export options." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Favicon (inline SVG data URI) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><rect x='15' y='15' width='30' height='30' rx='4' fill='white'/><rect x='20' y='20' width='20' height='20' rx='2' fill='%236366f1'/><rect x='25' y='25' width='10' height='10' rx='1' fill='white'/><rect x='55' y='15' width='30' height='30' rx='4' fill='white'/><rect x='60' y='20' width='20' height='20' rx='2' fill='%236366f1'/><rect x='65' y='25' width='10' height='10' rx='1' fill='white'/><rect x='15' y='55' width='30' height='30' rx='4' fill='white'/><rect x='20' y='60' width='20' height='20' rx='2' fill='%236366f1'/><rect x='25' y='65' width='10' height='10' rx='1' fill='white'/><rect x='55' y='55' width='10' height='10' rx='2' fill='white'/><rect x='70' y='55' width='15' height='10' rx='2' fill='white'/><rect x='55' y='70' width='15' height='10' rx='2' fill='white'/><rect x='75' y='70' width='10' height='15' rx='2' fill='white'/></svg>" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ===================== TOAST CONTAINER ===================== -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ===================== HEADER ===================== -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="url(#brandGrad)"/>
+          <rect x="4" y="4" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+          <rect x="5.5" y="5.5" width="6" height="6" rx="1" fill="url(#brandGrad)"/>
+          <rect x="7" y="7" width="3" height="3" rx="0.5" fill="white"/>
+          <rect x="15" y="4" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+          <rect x="16.5" y="5.5" width="6" height="6" rx="1" fill="url(#brandGrad)"/>
+          <rect x="18" y="7" width="3" height="3" rx="0.5" fill="white"/>
+          <rect x="4" y="15" width="9" height="9" rx="2" fill="white" opacity="0.9"/>
+          <rect x="5.5" y="16.5" width="6" height="6" rx="1" fill="url(#brandGrad)"/>
+          <rect x="7" y="18" width="3" height="3" rx="0.5" fill="white"/>
+          <rect x="15" y="15" width="4" height="4" rx="1" fill="white" opacity="0.9"/>
+          <rect x="21" y="15" width="2" height="9" rx="0.5" fill="white" opacity="0.9"/>
+          <rect x="15" y="21" width="5" height="2" rx="0.5" fill="white" opacity="0.9"/>
+          <defs>
+            <linearGradient id="brandGrad" x1="0" y1="0" x2="28" y2="28">
+              <stop stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <span class="brand-name">QR Studio</span>
+    </div>
+    <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme" title="Toggle dark/light mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <h1 class="hero-title">Generate &amp; Scan QR Codes</h1>
+  <p class="hero-subtitle">Create custom QR codes for any content or scan them in real-time — all in your browser.</p>
+</section>
+
+<!-- ===================== TAB SWITCHER ===================== -->
+<div class="main-tabs-wrap">
+  <div class="main-tabs" role="tablist">
+    <button class="main-tab active" data-tab="generate" role="tab" aria-selected="true" aria-controls="tab-generate" id="tab-btn-generate">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Generate
+    </button>
+    <button class="main-tab" data-tab="scan" role="tab" aria-selected="false" aria-controls="tab-scan" id="tab-btn-scan">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Scan
+    </button>
+    <button class="main-tab" data-tab="history" role="tab" aria-selected="false" aria-controls="tab-history" id="tab-btn-history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      History
+    </button>
+    <div class="tab-indicator"></div>
+  </div>
+</div>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main class="app-main">
+
+  <!-- ======== GENERATE TAB ======== -->
+  <section id="tab-generate" class="tab-panel active" role="tabpanel" aria-labelledby="tab-btn-generate">
+    <div class="gen-layout">
+
+      <!-- Left: Controls -->
+      <div class="gen-controls card">
+        <h2 class="card-title">QR Content</h2>
+
+        <!-- Type selector -->
+        <div class="type-selector" id="type-selector" role="group" aria-label="QR content type">
+          <button class="type-btn active" data-type="text" title="Text">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+            Text
+          </button>
+          <button class="type-btn" data-type="url" title="URL">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            URL
+          </button>
+          <button class="type-btn" data-type="email" title="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Email
+          </button>
+          <button class="type-btn" data-type="phone" title="Phone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.5a16 16 0 0 0 6.29 6.29l1.06-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Phone
+          </button>
+          <button class="type-btn" data-type="wifi" title="WiFi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            WiFi
+          </button>
+        </div>
+
+        <!-- Dynamic input area -->
+        <div id="input-area" class="input-area">
+          <!-- Text / URL / Phone (simple) -->
+          <div id="input-simple" class="input-group">
+            <label for="qr-input" id="qr-input-label" class="input-label">Enter Text</label>
+            <textarea id="qr-input" class="text-input" placeholder="Type anything here…" rows="4" aria-label="QR content input"></textarea>
+          </div>
+
+          <!-- Email inputs -->
+          <div id="input-email" class="input-group hidden">
+            <label class="input-label">Email Address</label>
+            <input type="email" id="email-to" class="text-input" placeholder="recipient@example.com" />
+            <label class="input-label mt">Subject</label>
+            <input type="text" id="email-subject" class="text-input" placeholder="Subject line…" />
+            <label class="input-label mt">Body</label>
+            <textarea id="email-body" class="text-input" placeholder="Message body…" rows="3"></textarea>
+          </div>
+
+          <!-- WiFi inputs -->
+          <div id="input-wifi" class="input-group hidden">
+            <label class="input-label">Network Name (SSID)</label>
+            <input type="text" id="wifi-ssid" class="text-input" placeholder="WiFi network name" />
+            <label class="input-label mt">Password</label>
+            <div class="password-wrap">
+              <input type="password" id="wifi-password" class="text-input" placeholder="Network password" />
+              <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Show/hide password">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <label class="input-label mt">Encryption</label>
+            <select id="wifi-enc" class="text-input select-input">
+              <option value="WPA">WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">None (Open)</option>
+            </select>
+            <label class="input-label mt">
+              <input type="checkbox" id="wifi-hidden" class="checkbox" /> Hidden network
+            </label>
+          </div>
+        </div>
+
+        <!-- Customization -->
+        <div class="section-divider">Customization</div>
+
+        <div class="customization-grid">
+          <div class="custom-item">
+            <label class="input-label" for="qr-fg">QR Color</label>
+            <div class="color-wrap">
+              <input type="color" id="qr-fg" value="#6366f1" class="color-picker" />
+              <span class="color-preview" id="fg-preview" style="background:#6366f1"></span>
+            </div>
+          </div>
+          <div class="custom-item">
+            <label class="input-label" for="qr-bg">Background</label>
+            <div class="color-wrap">
+              <input type="color" id="qr-bg" value="#ffffff" class="color-picker" />
+              <span class="color-preview" id="bg-preview" style="background:#ffffff"></span>
+            </div>
+          </div>
+          <div class="custom-item full-width">
+            <label class="input-label" for="qr-size">
+              Size <span id="size-value" class="badge">256 px</span>
+            </label>
+            <input type="range" id="qr-size" min="128" max="512" value="256" step="8" class="range-slider" />
+          </div>
+          <div class="custom-item full-width">
+            <label class="input-label" for="qr-error">Error Correction</label>
+            <select id="qr-error" class="text-input select-input">
+              <option value="L">Low (L) – 7%</option>
+              <option value="M" selected>Medium (M) – 15%</option>
+              <option value="Q">Quartile (Q) – 25%</option>
+              <option value="H">High (H) – 30%</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Preview -->
+      <div class="gen-preview">
+        <div class="card preview-card">
+          <h2 class="card-title">Preview</h2>
+          <div class="qr-preview-wrap" id="qr-preview-wrap">
+            <div class="qr-placeholder" id="qr-placeholder">
+              <svg viewBox="0 0 80 80" fill="none">
+                <rect x="8" y="8" width="26" height="26" rx="4" stroke="currentColor" stroke-width="3"/>
+                <rect x="16" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.5"/>
+                <rect x="46" y="8" width="26" height="26" rx="4" stroke="currentColor" stroke-width="3"/>
+                <rect x="54" y="16" width="10" height="10" rx="2" fill="currentColor" opacity="0.5"/>
+                <rect x="8" y="46" width="26" height="26" rx="4" stroke="currentColor" stroke-width="3"/>
+                <rect x="16" y="54" width="10" height="10" rx="2" fill="currentColor" opacity="0.5"/>
+                <rect x="46" y="46" width="10" height="10" rx="2" fill="currentColor" opacity="0.4"/>
+                <rect x="60" y="46" width="14" height="6" rx="2" fill="currentColor" opacity="0.3"/>
+                <rect x="46" y="60" width="14" height="6" rx="2" fill="currentColor" opacity="0.3"/>
+                <rect x="64" y="58" width="8" height="14" rx="2" fill="currentColor" opacity="0.3"/>
+              </svg>
+              <p>Start typing to generate your QR code</p>
+            </div>
+            <canvas id="qr-canvas" class="qr-canvas hidden" aria-label="Generated QR code"></canvas>
+          </div>
+
+          <!-- Auto-detect badge -->
+          <div id="detected-type" class="detected-badge hidden"></div>
+
+          <!-- Action buttons -->
+          <div class="preview-actions" id="preview-actions">
+            <button class="btn btn-outline" id="btn-copy-img" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Image
+            </button>
+            <button class="btn btn-outline" id="btn-dl-png" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              PNG
+            </button>
+            <button class="btn btn-outline" id="btn-dl-svg" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              SVG
+            </button>
+            <button class="btn btn-ghost" id="btn-clear">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== SCAN TAB ======== -->
+  <section id="tab-scan" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-scan">
+    <div class="scan-layout">
+
+      <!-- Scanner card -->
+      <div class="card scan-card">
+        <h2 class="card-title">Scan QR Code</h2>
+
+        <!-- Mode toggle -->
+        <div class="scan-mode-toggle" id="scan-mode-toggle" role="group" aria-label="Scan mode">
+          <button class="scan-mode-btn active" data-mode="camera" id="scan-camera-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            Camera
+          </button>
+          <button class="scan-mode-btn" data-mode="upload" id="scan-upload-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Upload Image
+          </button>
+        </div>
+
+        <!-- Camera view -->
+        <div id="camera-view" class="scanner-view">
+          <div class="video-wrap" id="video-wrap">
+            <video id="qr-video" autoplay muted playsinline class="scanner-video" aria-label="Camera feed for QR scanning"></video>
+            <canvas id="scan-canvas" class="scan-canvas"></canvas>
+            <div class="scan-overlay">
+              <div class="scan-frame" id="scan-frame">
+                <div class="scan-corner tl"></div>
+                <div class="scan-corner tr"></div>
+                <div class="scan-corner bl"></div>
+                <div class="scan-corner br"></div>
+                <div class="scan-line" id="scan-line"></div>
+              </div>
+            </div>
+            <div class="camera-status" id="camera-status">
+              <div class="status-dot" id="status-dot"></div>
+              <span id="status-text">Starting camera…</span>
+            </div>
+          </div>
+          <div class="scan-controls">
+            <button class="btn btn-primary" id="btn-start-camera">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+              Start Camera
+            </button>
+            <button class="btn btn-outline hidden" id="btn-stop-camera">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              Stop Camera
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload view -->
+        <div id="upload-view" class="scanner-view hidden">
+          <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Drop zone for QR code image upload">
+            <input type="file" id="file-input" accept="image/*" class="file-input-hidden" aria-label="Select image file" />
+            <div class="drop-content" id="drop-content">
+              <div class="drop-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="drop-title">Drop image here</p>
+              <p class="drop-sub">or <span class="link-style" id="browse-btn">browse files</span></p>
+              <p class="drop-hint">PNG, JPG, GIF, WebP supported</p>
+            </div>
+            <img id="upload-preview-img" class="uploaded-preview hidden" alt="Uploaded QR code preview" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Result card -->
+      <div class="card result-card" id="result-card">
+        <h2 class="card-title">Scan Result</h2>
+        <div class="result-empty" id="result-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>No QR code scanned yet</p>
+        </div>
+        <div class="result-content hidden" id="result-content">
+          <div class="result-type-badge" id="result-type-badge">Text</div>
+          <div class="result-text-wrap">
+            <p class="result-text" id="result-text"></p>
+          </div>
+          <div class="result-actions" id="result-actions">
+            <button class="btn btn-primary" id="btn-open-link" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Open Link
+            </button>
+            <button class="btn btn-outline" id="btn-copy-result">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Text
+            </button>
+            <button class="btn btn-ghost" id="btn-clear-result">
+              Clear
+            </button>
+          </div>
+        </div>
+        <!-- Success animation overlay -->
+        <div class="scan-success-anim hidden" id="scan-success-anim">
+          <div class="success-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======== HISTORY TAB ======== -->
+  <section id="tab-history" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-history">
+    <div class="history-layout">
+
+      <!-- Generate history -->
+      <div class="card">
+        <div class="history-header">
+          <h2 class="card-title">Generated QR Codes</h2>
+          <button class="btn btn-ghost btn-sm" id="btn-clear-gen-history">Clear All</button>
+        </div>
+        <div id="gen-history-list" class="history-list">
+          <div class="history-empty" id="gen-history-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <p>No QR codes generated yet</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scan history -->
+      <div class="card">
+        <div class="history-header">
+          <h2 class="card-title">Scan History</h2>
+          <button class="btn btn-ghost btn-sm" id="btn-clear-scan-history">Clear All</button>
+        </div>
+        <div id="scan-history-list" class="history-list">
+          <div class="history-empty" id="scan-history-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <p>No scans recorded yet</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="app-footer">
+  <p>QR Studio &middot; Built with vanilla JS &middot; All processing done locally in your browser</p>
+</footer>
+
+<script src="https://unpkg.com/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
