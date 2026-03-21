@@ -1,0 +1,23 @@
+{
+  "name": "2",
+  "version": "1.0.0",
+  "main": "jsQR.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Granth2006/QRCode-Generator-Scanner-Day-2-30in30.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Granth2006/QRCode-Generator-Scanner-Day-2-30in30/issues"
+  },
+  "homepage": "https://github.com/Granth2006/QRCode-Generator-Scanner-Day-2-30in30#readme",
+  "description": "",
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
